@@ -148,15 +148,14 @@ double encrypt(int e, int n, int m){
 }
 
 vector<int> getPrimeFactors(int foo){
-	vector<int> primes = getPrimes(foo);
+	vector<int> primes = getPrimes(foo),ret;
 	for(int i = 0; i < primes.size(); i++){
-		if( foo % primes[i] != 0){
-			primes.erase(primes.begin() + i);
+		if(foo % primes[i] == 0){
+			ret.push_back(primes[i]);
 		}
 	}
-	return primes;
+	return ret;
 }
-
 bool check(int e, int n){
 	vector<int> pq = findPQ(n);
 	if(pq.size() < 2){
@@ -192,10 +191,10 @@ int main(int argc, char** argv) {
 
 
 	//add code for file io here, read file into the read vector
-//	if(check(e,n) == 0){
-//		cout << "Check failed!";
-//		return 1;
-//	}
+	if(check(e,n) == 0){
+		cout << "Check failed!";
+		return 1;
+	}
 	try{fio1.open((string)fileName,fstream::in);}
 	catch(...){
 		cout << "file not opened!";
