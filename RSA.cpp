@@ -60,11 +60,13 @@ vector<int> getPrimes(int max){
 }
 
 vector<int> findPQ(int n){
-
 	vector<int> primes = getPrimes(n), pq;
-	for(int i = 0; i < primes.size() && pq.size() < 3; i++){
-		if(n % primes[i] == 0){
-			pq.push_back(primes[i]);
+	for(int i = 0; i < primes.size(); i++){
+		for(int j = 0; j < primes.size(); j++){
+			if(primes[i] * primes[j] == n ){
+				pq.push_back(primes[i]);
+				pq.push_back(primes[j]);
+			}
 		}
 	}
 
