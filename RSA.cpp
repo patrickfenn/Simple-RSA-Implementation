@@ -66,6 +66,7 @@ vector<int> findPQ(int n){
 			if(primes[i] * primes[j] == n ){
 				pq.push_back(primes[i]);
 				pq.push_back(primes[j]);
+				break;
 			}
 		}
 	}
