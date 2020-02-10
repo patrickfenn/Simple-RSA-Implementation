@@ -3,6 +3,8 @@
 #include <vector>
 #include <cmath>
 #include <cstdlib>
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -13,6 +15,15 @@ char getLetter(int index){
 	return letters[index-2];
 }
 
+int getNumber(char letter){
+	letter = toupper(letter);
+	for(int i = 0; i < letters.length(); i++){
+		if(letter == letters[i]){
+			return i+2;
+		}
+	}
+	return -1;
+}
 vector<int> getPrimes(int max){
 
 	 vector<int> unique, nonunique;
@@ -116,6 +127,7 @@ int mod1(int base, int exponent, int mod, int rem){
 
 	}
 	//cout << "e" << base	 << " " << exponent << " " << rem << endl;
+
 	return fmod((pow(base,2)*rem),mod);
 
 }
@@ -135,18 +147,93 @@ double encrypt(int e, int n, int m){
 	return mod1(m,e,n,1);
 }
 
+vector<int> getPrimeFactors(int foo){
+	vector<int> primes = getPrimes(foo);
+	for(int i = 0; i < primes.size(); i++){
+		if( foo % primes[i] != 0){
+			primes.erase(primes.begin() + i);
+		}
+	}
+	return primes;
+}
+
+bool check(int e, int n){
+	vector<int> pq = findPQ(n);
+	if(pq.size() < 2){
+		return false;
+	}
+	int phi = getPhi(pq);
+
+	vector<int> one = getPrimeFactors(e);
+	vector<int> two = getPrimeFactors(phi);
+	for(int i = 0; i < one.size(); i++){
+
+		for(int j = 0; j < two.size(); j++){
+			if(one[i] == two[j]){
+				return false;
+			}
+		}
+	}
+	return true;
+}
 int main(int argc, char** argv) {
 
-	int arr[58] ={10,7,58,30,23,62,7,64,62,23,62,61,7,41,62,21,7,49,75,7,69,53,58,37,37,41,10,64,50,7,10,64,21,62,61,35,62,61,62,7,52,10,21,58,7,49,75,7,1,62,26,22,53,30,21,10,37,64};
-	double foo,bar;
-	//cout << mod1(21,33,11,1);
+
+	vector<int> read,de,en;
+
 	const char* estring = argv[1];
 	const char* nstring = argv[2];
-	string mode = argv[3];
-	string fileName = argv[4];
+	const char* mode = argv[3];
+	const char* fileName = argv[4];
 	int e = atoi(estring);
 	int n = atoi(nstring);
-	cout << e << " " << n << " " << mode << " " << fileName << endl;
+	fstream fio1, fio2;
+	string line, token;
+
+
+	//add code for file io here, read file into the read vector
+//	if(check(e,n) == 0){
+//		cout << "Check failed!";
+//		return 1;
+//	}
+	try{fio1.open((string)fileName,fstream::in);}
+	catch(...){
+		cout << "file not opened!";
+		return 1;
+	}
+	while(fio1){
+		getline(fio1,line);
+		for(int i = 0; i < line.length() ; i++){
+			read.push_back( (int)line[i]);
+		}
+	}
+	fio1.close();
+
+	if((string)mode == "e"){
+		for(int i = 0; i < read.size(); i++){
+			en.push_back( encrypt(e,n,read[i]));
+		}
+		fio2.open("incrypted.txt", fstream::out);
+		for(int i = 0; i < en.size(); i++){
+			fio2 << en[i] << " ";
+		}
+		cout << "incrypted.txt";
+		//write to encrypt file name will be "incrypted.txt"
+	}
+	else if((string)mode == "d"){
+		for(int i = 0; i < read.size(); i++){
+			de.push_back( decrypt(e,n,read[i]));
+		}
+		fio2.open("decrypted.txt", fstream::out);
+		for(int i = 0; i < en.size(); i++){
+			fio2 << en[i] << " ";
+		}
+		vector<int> pq = findPQ(n);
+		cout << "p = " << pq.front() << ", q = " << pq.back() << ", decrypted.txt";
+		//write to decrypt file name will be "decrypted.txt"
+	}
+	fio2.close();
+
 	return 0;
 }
 
