@@ -1,9 +1,3 @@
-//Patrick Fenn SID 862152988 
-// Alma Rodriguez (861262171)
-
-
-
-
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -14,18 +8,18 @@
 
 using namespace std;
 
-const string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ ";
+const string letters = "..ABCDEFGHIJKLMNOPQRSTUVWXYZ ";
 
 char getLetter(int index){
 
-	return letters[index-2];
+	return letters[index];
 }
 
 int getNumber(char letter){
 	letter = toupper(letter);
 	for(int i = 0; i < letters.length(); i++){
 		if(letter == letters[i]){
-			return i+2;
+			return i;
 		}
 	}
 	return -1;
@@ -60,18 +54,24 @@ vector<int> getPrimes(int max){
 }
 
 vector<int> findPQ(int n){
-	vector<int> primes = getPrimes(n), pq;
-	for(int i = 0; i < primes.size(); i++){
-		for(int j = 0; j < primes.size(); j++){
-			if(primes[i] * primes[j] == n ){
-				pq.push_back(primes[i]);
-				pq.push_back(primes[j]);
-				break;
+
+	vector<int> primes = getPrimes(n), pq,ret;
+	for(int i = 0; i < primes.size() && pq.size() < 3; i++){
+		if(n % primes[i] == 0){
+			pq.push_back(primes[i]);
+		}
+	}
+	for(int i = 0; i < pq.size(); i++){
+		for(int j = 0; j < pq.size(); j++){
+			if(pq[i] * pq[j] == n){
+				ret.push_back(i);
+				ret.push_back(j);
 			}
 		}
 	}
 
-	return pq;
+
+	return ret;
 }
 
 int getPhi(vector<int> pq){
@@ -165,6 +165,7 @@ vector<int> getPrimeFactors(int foo){
 	}
 	return ret;
 }
+
 bool check(int e, int n){
 	vector<int> pq = findPQ(n);
 	if(pq.size() < 2){
@@ -189,58 +190,68 @@ int main(int argc, char** argv) {
 
 	vector<int> read,de,en;
 
-	const char* estring = argv[1];
-	const char* nstring = argv[2];
-	const char* mode = argv[3];
-	const char* fileName = argv[4];
+	const char* estring = argv[0];
+	const char* nstring = argv[1];
+	const char* mode = argv[2];
+	const char* fileName = argv[3];
 	int e = atoi(estring);
 	int n = atoi(nstring);
 	fstream fio1, fio2;
 	string line, token;
 
-
-	//add code for file io here, read file into the read vector
 	if(check(e,n) == 0){
-		cout << "Check failed!";
+		cout << "check failed.";
 		return 1;
 	}
-	try{fio1.open((string)fileName,fstream::in);}
-	catch(...){
-		cout << "file not opened!";
-		return 1;
+	
+	if((string)mode == "e"){
+		
+	
+		fio1.open("english.txt", fstream::in);
+		while(fio1){
+			getline(fio1,line);
+			for(int i = 0; i < line.length(); i++){
+				read.push_back(getNumber(line[i]));
+			}
+		}
+		fio1.close();
+	
+		for(int i = 0; i < read.size(); i++){
+			en.push_back(encrypt(e, n,read[i]));
+		}
+	
+		fio2.open("incrypted.txt", fstream::out);
+		for(int i = 0; i < en.size(); i++){
+			fio2<< en[i] << " ";
+		}
+		fio2.close();
+		cout << "incrypted.txt";
 	}
+	//add code for file io here, read file into the read vector
+	if((string)mode == "d"){
+	fio1.open("incrypted.txt", fstream::in);
+	read.clear();
 	while(fio1){
 		getline(fio1,line);
-		for(int i = 0; i < line.length() ; i++){
-			read.push_back( (int)line[i]);
+		istringstream ss(line);
+		while(ss){
+			ss >> token;
+			read.push_back(atoi(token.c_str()));
 		}
 	}
 	fio1.close();
-
-	if((string)mode == "e"){
-		for(int i = 0; i < read.size(); i++){
-			en.push_back( encrypt(e,n,read[i]));
-		}
-		fio2.open("incrypted.txt", fstream::out);
-		for(int i = 0; i < en.size(); i++){
-			fio2 << en[i] << " ";
-		}
-		cout << "incrypted.txt";
-		//write to encrypt file name will be "incrypted.txt"
+	for(int i = 0; i < read.size(); i++){\
+		de.push_back( decrypt(e,n,read[i]));
 	}
-	else if((string)mode == "d"){
-		for(int i = 0; i < read.size(); i++){
-			de.push_back( decrypt(e,n,read[i]));
-		}
-		fio2.open("decrypted.txt", fstream::out);
-		for(int i = 0; i < en.size(); i++){
-			fio2 << en[i] << " ";
-		}
-		vector<int> pq = findPQ(n);
-		cout << "p = " << pq.front() << ", q = " << pq.back() << ", decrypted.txt";
-		//write to decrypt file name will be "decrypted.txt"
+	
+	fio2.open("decrypted.txt", fstream::out);
+	for(int i = 0; i < de.size(); i++){
+		fio2 << getLetter(de[i]) << " ";
 	}
 	fio2.close();
+	vector<int> pq = findPQ(n);
+	cout << "p = " << pq.front() << ", q = " << pq.back() << ", decrypted.txt";
+	}
 
 	return 0;
 }
