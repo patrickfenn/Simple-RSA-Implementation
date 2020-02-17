@@ -211,8 +211,8 @@ int main(int argc, char** argv) {
 
 
 		fio1.open((string)fileName, fstream::in);
-		while(!fio1.eof()){
-		getline(fio1,line);
+		while(fio1){
+		fio1 >> line;
 		for(int i = 0; i < line.length(); i++){
 			read.push_back(getNumber(line[i]));
 		}
@@ -233,7 +233,7 @@ int main(int argc, char** argv) {
 	if((string)mode == "d"){
 	fio1.open((string)fileName, fstream::in);
 	read.clear();
-	while(!fio1.eof()){
+	while(fio1){
 		getline(fio1,line);
 		istringstream ss(line);
 		while(getline(ss,token,' ')){
