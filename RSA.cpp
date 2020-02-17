@@ -246,7 +246,7 @@ int main(int argc, char** argv) {
 
 	fio2.open("decrypted.txt", fstream::out);
 	for(int i = 0; i < de.size(); i++){
-		fio2 << getLetter(de[i]);
+		fio2 << getLetter(de[i]) << " ";
 	}
 	fio2.close();
 	vector<int> pq = findPQ(n);
