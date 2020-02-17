@@ -207,7 +207,6 @@ int main(int argc, char** argv) {
 	fstream fio1, fio2;
 	string line, token;
 
-	cout << fileName << " " << e << " " << n;
 	if((string)mode == "e"){
 
 
@@ -225,7 +224,7 @@ int main(int argc, char** argv) {
 		fio2.open("incrypted.txt", fstream::out);
 		for(int i = 0; i < en.size(); i++){
 			fio2<< en[i];
-			fio2 << " ";
+			fio2 << ' ';
 		}
 		fio2.close();
 		cout << "incrypted.txt";
@@ -237,8 +236,7 @@ int main(int argc, char** argv) {
 	while(fio1){
 		getline(fio1,line);
 		istringstream ss(line);
-		while(ss){
-			ss >> token;
+		while(getline(ss,token,' ')){
 			read.push_back(atoi(token.c_str()));
 		}
 	}
