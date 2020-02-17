@@ -224,7 +224,7 @@ int main(int argc, char** argv) {
 
 		fio2.open("incrypted.txt", fstream::out);
 		for(int i = 0; i < en.size(); i++){
-			fio2<< en[i];
+			fio2<< en[i] << " ";
 		}
 		fio2.close();
 		cout << "incrypted.txt";
