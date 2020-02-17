@@ -198,20 +198,16 @@ bool check(int e, int n){
 int main(int argc, char** argv) {
 	vector<int> read;
 
-	const char* estring = argv[0];
-	const char* nstring = argv[1];
-	const char* mode = argv[2];
-	const char* fileName = argv[3];
+	const char* estring = argv[1];
+	const char* nstring = argv[2];
+	const char* mode = argv[3];
+	const char* fileName = argv[4];
 	int e = atoi(estring);
 	int n = atoi(nstring);
 	fstream fio1, fio2;
 	string line, token;
 
-	if(check(e,n) == 0){
-		cout << "check failed.";
-		return 1;
-	}
-
+	cout << fileName << " " << e << " " << n;
 	if((string)mode == "e"){
 
 
@@ -226,16 +222,16 @@ int main(int argc, char** argv) {
 
 		vector<double>en = encrypt(read,e,n);
 
-		fio2.open((string)fileName, fstream::out);
+		fio2.open("incrypted.txt", fstream::out);
 		for(int i = 0; i < en.size(); i++){
-			fio2<< en[i] << " ";
+			fio2<< en[i];
 		}
 		fio2.close();
 		cout << "incrypted.txt";
 	}
 	//add code for file io here, read file into the read vector
 	if((string)mode == "d"){
-	fio1.open("incrypted.txt", fstream::in);
+	fio1.open((string)fileName, fstream::in);
 	read.clear();
 	while(fio1){
 		getline(fio1,line);
@@ -250,7 +246,7 @@ int main(int argc, char** argv) {
 
 	fio2.open("decrypted.txt", fstream::out);
 	for(int i = 0; i < de.size(); i++){
-		fio2 << getLetter(de[i]) << " ";
+		fio2 << getLetter(de[i]);
 	}
 	fio2.close();
 	vector<int> pq = findPQ(n);
