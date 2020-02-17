@@ -211,10 +211,12 @@ int main(int argc, char** argv) {
 
 
 		fio1.open((string)fileName, fstream::in);
-			getline(fio1,line);
-			for(int i = 0; i < line.length(); i++){
-				read.push_back(getNumber(line[i]));
-			}
+		while(!fio1.eof()){
+		getline(fio1,line);
+		for(int i = 0; i < line.length(); i++){
+			read.push_back(getNumber(line[i]));
+		}
+		}
 		fio1.close();
 
 		vector<double>en = encrypt(read,e,n);
