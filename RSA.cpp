@@ -216,7 +216,7 @@ int main(int argc, char** argv) {
 		for(int i = 0; i < line.length(); i++){
 			read.push_back(getNumber(line[i]));
 		}
-		}
+		}	
 		fio1.close();
 
 		vector<double>en = encrypt(read,e,n);
@@ -233,7 +233,7 @@ int main(int argc, char** argv) {
 	if((string)mode == "d"){
 	fio1.open((string)fileName, fstream::in);
 	read.clear();
-	while(fio1){
+	while(!fio1.eof()){
 		getline(fio1,line);
 		istringstream ss(line);
 		while(getline(ss,token,' ')){
