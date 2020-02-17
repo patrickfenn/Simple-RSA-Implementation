@@ -206,7 +206,7 @@ int main(int argc, char** argv) {
 	int n = atoi(nstring);
 	fstream fio1, fio2;
 	string line, token;
-	string prev;
+	string prev="";
 	if((string)mode == "e"){
 
 
@@ -234,9 +234,8 @@ int main(int argc, char** argv) {
 	//add code for file io here, read file into the read vector
 	if((string)mode == "d"){
 	fio1.open((string)fileName, fstream::in);
-	read.clear();
 	while(fio1){
-		getline(fio1,line);
+		fio1 >> line;
 		istringstream ss(line);
 		while(getline(ss,token,' ')){
 			read.push_back(atoi(token.c_str()));
