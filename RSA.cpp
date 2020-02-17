@@ -56,43 +56,45 @@ vector<int> getPrimes(int max){
 vector<int> findPQ(int n){
 
 	vector<int> primes = getPrimes(n), pq,ret;
-	for(int i = 0; i < primes.size() && pq.size() < 3; i++){
-		if(n % primes[i] == 0){
+	for(int i = 0; i < primes.size(); i++){
+		if(remainder(n,primes[i]) == 0){
 			pq.push_back(primes[i]);
 		}
 	}
 	for(int i = 0; i < pq.size(); i++){
 		for(int j = 0; j < pq.size(); j++){
 			if(pq[i] * pq[j] == n){
-				ret.push_back(i);
-				ret.push_back(j);
+				ret.push_back(pq[i]);
+				ret.push_back(pq[j]);
+				return ret;
 			}
 		}
 	}
+
+
 
 
 	return ret;
 }
 
 int getPhi(vector<int> pq){
-
 	return ( (pq.front() -1 ) * (pq.back() -1));
 }
 
 //find inverse of foo%n, uses extended euclieds
-int findInverse(int foo, int n){
+int findInverse(int e, int phi){
 
 
 	vector<int> one,two;
 
 	for(int i = 0; i < 300; i++){
-		one.push_back(foo*i);
-		two.push_back(n*i);
+		one.push_back(e*i);
+		two.push_back(phi*i);
 	}
 
 	for(int i = 0; i < 300; i++){
 		for(int j = 0; j < 300; j++){
-			if(one[i] - two[j] == 1){
+			if((one[i] -two[j]) == 1){
 				return i;
 			}
 		}
@@ -141,19 +143,27 @@ int mod1(int base, int exponent, int mod, int rem){
 
 }
 
-double decrypt(int e, int n, int m){
+vector<double> decrypt(vector<int> in, int e, int n){
 
-	vector<int> pq = findPQ(n),ret;
+	vector<int> pq = findPQ(n);
+	vector<double>ret;
 	int phi = getPhi(pq);
 
 	int d = findInverse(e,phi);
 
-	return mod1(m,d,n,1);
+	for(int i= 0; i < in.size(); i++){
+		ret.push_back( mod1(in[i],d,n,1) );
+	}
+	return ret;
 
 }
 
-double encrypt(int e, int n, int m){
-	return mod1(m,e,n,1);
+vector<double> encrypt(vector<int> in, int e, int n){
+	vector<double> ret;
+	for(int i = 0; i < in.size(); i++){
+		ret.push_back(mod1(in[i],e,n,1));
+	}
+	return ret;
 }
 
 vector<int> getPrimeFactors(int foo){
@@ -186,9 +196,7 @@ bool check(int e, int n){
 	return true;
 }
 int main(int argc, char** argv) {
-
-
-	vector<int> read,de,en;
+	vector<int> read;
 
 	const char* estring = argv[0];
 	const char* nstring = argv[1];
@@ -203,11 +211,11 @@ int main(int argc, char** argv) {
 		cout << "check failed.";
 		return 1;
 	}
-	
+
 	if((string)mode == "e"){
-		
-	
-		fio1.open("english.txt", fstream::in);
+
+
+		fio1.open((string)fileName, fstream::in);
 		while(fio1){
 			getline(fio1,line);
 			for(int i = 0; i < line.length(); i++){
@@ -215,12 +223,10 @@ int main(int argc, char** argv) {
 			}
 		}
 		fio1.close();
-	
-		for(int i = 0; i < read.size(); i++){
-			en.push_back(encrypt(e, n,read[i]));
-		}
-	
-		fio2.open("incrypted.txt", fstream::out);
+
+		vector<double>en = encrypt(read,e,n);
+
+		fio2.open((string)fileName, fstream::out);
 		for(int i = 0; i < en.size(); i++){
 			fio2<< en[i] << " ";
 		}
@@ -240,10 +246,8 @@ int main(int argc, char** argv) {
 		}
 	}
 	fio1.close();
-	for(int i = 0; i < read.size(); i++){\
-		de.push_back( decrypt(e,n,read[i]));
-	}
-	
+	vector<double> de = decrypt(read,e,n);
+
 	fio2.open("decrypted.txt", fstream::out);
 	for(int i = 0; i < de.size(); i++){
 		fio2 << getLetter(de[i]) << " ";
@@ -253,6 +257,7 @@ int main(int argc, char** argv) {
 	cout << "p = " << pq.front() << ", q = " << pq.back() << ", decrypted.txt";
 	}
 
+
+
 	return 0;
 }
-
