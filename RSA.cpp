@@ -206,17 +206,19 @@ int main(int argc, char** argv) {
 	int n = atoi(nstring);
 	fstream fio1, fio2;
 	string line, token;
-
+	string prev;
 	if((string)mode == "e"){
 
 
 		fio1.open((string)fileName, fstream::in);
-		
+		while(fio1){
 		fio1 >> line;
+		if(prev == line){break;}
 		for(int i = 0; i < line.length(); i++){
 			read.push_back(getNumber(line[i]));
 		}
-			
+		prev = line;
+		}
 		fio1.close();
 
 		vector<double>en = encrypt(read,e,n);
